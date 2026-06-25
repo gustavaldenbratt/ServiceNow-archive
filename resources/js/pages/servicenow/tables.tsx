@@ -20,9 +20,13 @@ type TableConfig = {
 export default function Tables({
     configs,
     availableTables,
+    hasConnection,
+    tableDiscoveryFailed,
 }: {
     configs: TableConfig[];
     availableTables: string[];
+    hasConnection: boolean;
+    tableDiscoveryFailed: boolean;
 }) {
     return (
         <>
@@ -46,24 +50,47 @@ export default function Tables({
                             <>
                                 <div className="grid gap-2">
                                     <Label htmlFor="table_name">Table</Label>
-                                    <select
-                                        id="table_name"
-                                        name="table_name"
-                                        defaultValue=""
-                                        required
-                                        className="flex h-9 min-w-48 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 md:text-sm"
-                                    >
-                                        <option value="" disabled>
-                                            {availableTables.length === 0
-                                                ? 'No tables discovered - configure the connection first'
-                                                : 'Select a table'}
-                                        </option>
-                                        {availableTables.map((table) => (
-                                            <option key={table} value={table}>
-                                                {table}
+                                    {availableTables.length > 0 ? (
+                                        <select
+                                            id="table_name"
+                                            name="table_name"
+                                            defaultValue=""
+                                            required
+                                            className="flex h-9 min-w-48 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 md:text-sm"
+                                        >
+                                            <option value="" disabled>
+                                                Select a table
                                             </option>
-                                        ))}
-                                    </select>
+                                            {availableTables.map((table) => (
+                                                <option
+                                                    key={table}
+                                                    value={table}
+                                                >
+                                                    {table}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    ) : (
+                                        <Input
+                                            id="table_name"
+                                            name="table_name"
+                                            placeholder={
+                                                hasConnection
+                                                    ? 'incident'
+                                                    : 'Configure the connection first'
+                                            }
+                                            disabled={!hasConnection}
+                                            required
+                                        />
+                                    )}
+                                    {hasConnection &&
+                                        availableTables.length === 0 && (
+                                            <p className="max-w-80 text-xs text-muted-foreground">
+                                                {tableDiscoveryFailed
+                                                    ? 'Table discovery failed; enter a table name manually.'
+                                                    : 'No task tables were discovered; enter a table name manually.'}
+                                            </p>
+                                        )}
                                     <InputError message={errors.table_name} />
                                 </div>
 
@@ -81,10 +108,7 @@ export default function Tables({
                                 </div>
 
                                 <Button
-                                    disabled={
-                                        processing ||
-                                        availableTables.length === 0
-                                    }
+                                    disabled={processing || !hasConnection}
                                 >
                                     Add table
                                 </Button>
