@@ -2,11 +2,14 @@
 
 namespace App\Providers;
 
+use App\Models\SnConnection;
+use App\Services\ServiceNow\ServiceNowClient;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use RuntimeException;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,7 +18,19 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(ServiceNowClient::class, function () {
+            $connection = SnConnection::query()->first();
+
+            if (! $connection || ! $connection->instance_url) {
+                throw new RuntimeException('ServiceNow connection is not configured.');
+            }
+
+            return new ServiceNowClient(
+                $connection->instance_url,
+                (string) $connection->username,
+                (string) $connection->password,
+            );
+        });
     }
 
     /**
