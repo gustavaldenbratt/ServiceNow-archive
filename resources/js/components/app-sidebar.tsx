@@ -1,7 +1,6 @@
 import { Link } from '@inertiajs/react';
-import { Archive, BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
+import { Database, History, Plug, Table2 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
-import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -13,33 +12,32 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import { edit as serviceNowConnection } from '@/routes/servicenow/connection';
 import { index as serviceNowRecords } from '@/routes/servicenow/records';
+import { index as serviceNowRuns } from '@/routes/servicenow/runs';
+import { index as serviceNowTables } from '@/routes/servicenow/tables';
 import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-    {
-        title: 'ServiceNow Archive',
+        title: 'Records',
         href: serviceNowRecords(),
-        icon: Archive,
-    },
-];
-
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: FolderGit2,
+        icon: Database,
     },
     {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
+        title: 'Tables',
+        href: serviceNowTables(),
+        icon: Table2,
+    },
+    {
+        title: 'Runs',
+        href: serviceNowRuns(),
+        icon: History,
+    },
+    {
+        title: 'Connection',
+        href: serviceNowConnection(),
+        icon: Plug,
     },
 ];
 
@@ -50,7 +48,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard()} prefetch>
+                            <Link href={serviceNowRecords()} prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>
@@ -63,7 +61,6 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
             </SidebarFooter>
         </Sidebar>
