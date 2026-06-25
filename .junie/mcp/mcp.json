@@ -1,0 +1,11 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "/Users/gustavaldenbratt/Library/Application Support/Herd/bin/php85",
+            "args": [
+                "/Users/gustavaldenbratt/laravel/ServiceNow-legacy-viewer/artisan",
+                "boost:mcp"
+            ]
+        }
+    }
+}
