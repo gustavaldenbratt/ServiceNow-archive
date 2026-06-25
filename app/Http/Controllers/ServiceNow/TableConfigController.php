@@ -20,10 +20,17 @@ class TableConfigController extends Controller
     public function index(): Response
     {
         $configs = SnTableConfig::query()->orderBy('table_name')->get();
+        $connection = SnConnection::current();
+        $hasConnection = filled($connection->instance_url) && filled($connection->username) && filled($connection->password);
+        $tableDiscoveryFailed = false;
 
         return Inertia::render('servicenow/tables', [
             'configs' => $configs,
-            'availableTables' => $this->discoverAvailableTables($configs->pluck('table_name')->all()),
+            'availableTables' => $hasConnection
+                ? $this->discoverAvailableTables($connection, $configs->pluck('table_name')->all(), $tableDiscoveryFailed)
+                : [],
+            'hasConnection' => $hasConnection,
+            'tableDiscoveryFailed' => $tableDiscoveryFailed,
         ]);
     }
 
@@ -58,20 +65,17 @@ class TableConfigController extends Controller
      * @param  array<int, string>  $configuredTables
      * @return array<int, string>
      */
-    private function discoverAvailableTables(array $configuredTables): array
+    private function discoverAvailableTables(SnConnection $connection, array $configuredTables, bool &$tableDiscoveryFailed): array
     {
-        $connection = SnConnection::current();
-
-        if (! $connection->instance_url) {
-            return [];
-        }
-
         try {
             $client = new ServiceNowClient($connection->instance_url, (string) $connection->username, (string) $connection->password);
             $resolver = new TaskTableResolver($client);
 
             return array_values(array_diff($resolver->resolveDescendantsOf('task'), $configuredTables));
-        } catch (Throwable) {
+        } catch (Throwable $e) {
+            report($e);
+            $tableDiscoveryFailed = true;
+
             return [];
         }
     }

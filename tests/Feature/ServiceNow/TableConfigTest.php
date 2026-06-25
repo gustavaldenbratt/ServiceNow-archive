@@ -32,6 +32,8 @@ test('tables page lists configured tables and discovered available tables', func
     $response->assertOk();
     $response->assertInertia(fn ($page) => $page
         ->where('availableTables', ['sc_task'])
+        ->where('hasConnection', true)
+        ->where('tableDiscoveryFailed', false)
         ->has('configs', 1));
 });
 
@@ -41,7 +43,32 @@ test('tables page does not blow up when no connection is configured', function (
     $response = $this->actingAs($user)->get(route('servicenow.tables.index'));
 
     $response->assertOk();
-    $response->assertInertia(fn ($page) => $page->where('availableTables', []));
+    $response->assertInertia(fn ($page) => $page
+        ->where('availableTables', [])
+        ->where('hasConnection', false)
+        ->where('tableDiscoveryFailed', false));
+});
+
+test('tables page allows manual table entry when discovery fails', function () {
+    $user = User::factory()->create();
+
+    SnConnection::query()->create([
+        'instance_url' => 'https://dev1234.service-now.com',
+        'username' => 'svc',
+        'password' => 'secret',
+    ]);
+
+    Http::fake([
+        'dev1234.service-now.com/api/now/table/sys_db_object*' => Http::response([], 403),
+    ]);
+
+    $response = $this->actingAs($user)->get(route('servicenow.tables.index'));
+
+    $response->assertOk();
+    $response->assertInertia(fn ($page) => $page
+        ->where('availableTables', [])
+        ->where('hasConnection', true)
+        ->where('tableDiscoveryFailed', true));
 });
 
 test('a table config can be added', function () {
