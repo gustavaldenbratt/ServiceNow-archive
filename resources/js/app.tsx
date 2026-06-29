@@ -7,7 +7,7 @@ import AuthLayout from '@/layouts/auth-layout';
 import ServiceNowLayout from '@/layouts/servicenow/layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'ServiceNow Archive';
 
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),

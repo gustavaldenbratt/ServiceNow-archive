@@ -2079,7 +2079,7 @@ import AuthLayout from '@/layouts/auth-layout';
 import ServiceNowLayout from '@/layouts/servicenow/layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'ServiceNow Archive';
 
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
@@ -3553,12 +3553,12 @@ import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Dashboard',
-        href: dashboard(),
+        title: 'Records',
+        href: serviceNowRecords(),
         icon: LayoutGrid,
     },
     {
-        title: 'ServiceNow Archive',
+        title: 'Records',
         href: serviceNowRecords(),
         icon: Archive,
     },
@@ -3566,13 +3566,13 @@ const mainNavItems: NavItem[] = [
 
 const footerNavItems: NavItem[] = [
     {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
+        title: 'Records',
+        href: serviceNowRecords(),
         icon: FolderGit2,
     },
     {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
+        title: 'Records',
+        href: serviceNowRecords(),
         icon: BookOpen,
     },
 ];
