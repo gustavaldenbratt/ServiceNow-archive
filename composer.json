@@ -1,11 +1,12 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/react-starter-kit",
+    "name": "servicenow/legacy-viewer",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "A ServiceNow legacy archive viewer and sync tool.",
     "keywords": [
-        "laravel",
-        "framework"
+        "servicenow",
+        "archive",
+        "viewer"
     ],
     "license": "MIT",
     "require": {
